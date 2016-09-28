@@ -1,9 +1,10 @@
 using System;
+using System.Globalization;
 
 namespace TaxCalculator {
-  public class TaxCalculator : Exception {
-    private static double[] defaultIncomeLimits = new double[] {30000, 50000, 100000, 200000, 250000};
-    private static double[] defaultTaxRates = new double[] {0.1, 0.2, 0.3, 0.35, 0.4};
+  public class TaxCalculator{
+    private static double[] defaultIncomeLimits = new double[] {3, 5, 10, 20, 25};
+    private static double[] defaultTaxRates = new double[] {0, 0.1, 0.2, 0.3, 0.35, 0.4};
     private double[] currentIncomeLimits, currentTaxRates;
     public double GrossIncome {get; set;}
     public double Tax {get; set;}
@@ -16,20 +17,38 @@ namespace TaxCalculator {
       currentTaxRates = defaultTaxRates;
     }
     public void Reset() { Init(); }
-    public double getCurrentIncomeLimit(int interval) {
+    public string getCurrentIncomeLimit(int interval) {
       try {
-        return currentIncomeLimits[interval-1];
+        return String.Format(new CultureInfo("en-US"), "{0:c}", currentIncomeLimits[interval-1] * Math.Pow(10,4));
       } catch (System.IndexOutOfRangeException ex) {
         throw new ArgumentOutOfRangeException("Error! Interval between 1-5", ex);
       }  
     }
     public void setCurrentIncomeLImit(int interval, double newLimit) {
+      if(!DataValidator.IsValid(currentIncomeLimits, interval - 1, newLimit / Math.Pow(10, 4)))
+        Console.WriteLine("Something went wrong, can't update the income limit. ");
+      else 
+        currentIncomeLimits[interval - 1] = newLimit / Math.Pow(10,4);
+    }
+    public string getCurrentTaxRate(int interval) {
       try {
-        currentIncomeLimits[interval-1] = newLimit;
+        return String.Format("{0:0%}", currentTaxRates[interval - 1]);
       } catch (System.IndexOutOfRangeException ex) {
         throw new ArgumentOutOfRangeException("Error! Interval between 1-5", ex);
       }  
     }
-  
+    public void setCurrentTaxRate(int interval, double newRate) {
+      if(!DataValidator.IsValid(currentIncomeLimits, interval - 1, newRate))
+        Console.WriteLine("Something went wrong, can't update the income limit. ");
+      else 
+        currentIncomeLimits[interval - 1] = newRate;
+    }
+    public void PrintDataTable() {
+      Console.WriteLine(String.Format("**********************************************\n" +
+                                      "{0, -25}     {1, -5}                          \n" +
+                                      "**********************************************\n" +
+                                      "Incremental Income", "Tax Rate"));
+      
+    }        
   }
 }
