@@ -3,8 +3,8 @@ using System.Globalization;
 
 namespace TaxCalculator {
   public class TaxCalculator{
-    private static double[] defaultIncomeLimits = new double[] {3, 5, 10, 20, 25};
-    private static double[] defaultTaxRates = new double[] {0, 0.1, 0.2, 0.3, 0.35, 0.4};
+    private static double[] _defaultIncomeLimits = new double[] {0, 3, 5, 10, 20, 25, Double.MaxValue};
+    private static double[] _defaultTaxRates = new double[] {0, 0.1, 0.2, 0.3, 0.35, 0.4};
     private double[] currentIncomeLimits, currentTaxRates;
     public double GrossIncome {get; set;}
     public double Tax {get; set;}
@@ -13,42 +13,47 @@ namespace TaxCalculator {
       Init();
     }
     private void Init() {
-      currentIncomeLimits = defaultIncomeLimits;
-      currentTaxRates = defaultTaxRates;
+      currentIncomeLimits = (double[])_defaultIncomeLimits.Clone();
+      currentTaxRates = (double[])_defaultTaxRates.Clone();
     }
     public void Reset() { Init(); }
-    public string getCurrentIncomeLimit(int interval) {
+    public string GetCurrentIncomeLimit(int interval) {
       try {
-        return String.Format(new CultureInfo("en-US"), "{0:c}", currentIncomeLimits[interval-1] * Math.Pow(10,4));
+        return String.Format(new CultureInfo("en-US"), "{0:c}", currentIncomeLimits[interval] * Math.Pow(10,4));
       } catch (System.IndexOutOfRangeException ex) {
-        throw new ArgumentOutOfRangeException("Error! Interval between 1-5", ex);
+        throw new ArgumentOutOfRangeException("Error! Interval between 1-6", ex);
       }  
     }
-    public void setCurrentIncomeLImit(int interval, double newLimit) {
-      if(!DataValidator.IsValid(currentIncomeLimits, interval - 1, newLimit / Math.Pow(10, 4)))
-        Console.WriteLine("Something went wrong, can't update the income limit. ");
+    public void SetCurrentIncomeLimit(int interval, double newLimit) {
+      if(!DataValidator.IsValid(currentIncomeLimits, interval, newLimit / Math.Pow(10, 4)))
+        Console.WriteLine("\n\nSOMETHING WENT WRONG, CAN'T UPDATE THE INCOME LIMIT.");
       else 
-        currentIncomeLimits[interval - 1] = newLimit / Math.Pow(10,4);
+        currentIncomeLimits[interval] = newLimit / Math.Pow(10,4);
     }
-    public string getCurrentTaxRate(int interval) {
+    public string GetCurrentTaxRate(int interval) {
       try {
         return String.Format("{0:0%}", currentTaxRates[interval - 1]);
       } catch (System.IndexOutOfRangeException ex) {
-        throw new ArgumentOutOfRangeException("Error! Interval between 1-5", ex);
+        throw new ArgumentOutOfRangeException("Error! Interval between 1-6", ex);
       }  
     }
-    public void setCurrentTaxRate(int interval, double newRate) {
-      if(!DataValidator.IsValid(currentIncomeLimits, interval - 1, newRate))
-        Console.WriteLine("Something went wrong, can't update the income limit. ");
+    public void SetCurrentTaxRate(int interval, double newRate) {
+      if(!DataValidator.IsValid(currentTaxRates, interval - 1, newRate))
+        Console.WriteLine("\n\nSOMETHING WENT WRONG, CAN'T UPDATE THE TAX RATE.");
       else 
-        currentIncomeLimits[interval - 1] = newRate;
+        currentTaxRates[interval - 1] = newRate;
     }
     public void PrintDataTable() {
-      Console.WriteLine(String.Format("**********************************************\n" +
-                                      "{0, -25}     {1, -5}                          \n" +
-                                      "**********************************************\n" +
-                                      "Incremental Income", "Tax Rate"));
-      
+      Console.WriteLine(String.Format("\n\n**********************************************\n" +
+                                          "{0, -20}              {1, 10}\n" +
+                                          "**********************************************\n", 
+                                          "Incremental Income", "Tax Rate"));
+      PrintLines();
+    }
+    public void PrintLines() {
+      for (int i = 0; i < 6; i++)
+        Console.WriteLine(String.Format(new CultureInfo("en-US"), "{0, -11} to {1, -20} {2, 5}",
+                               GetCurrentIncomeLimit(i), GetCurrentIncomeLimit(i+1), GetCurrentTaxRate(i+1)));
     }        
   }
 }
