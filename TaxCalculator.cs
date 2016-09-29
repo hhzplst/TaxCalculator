@@ -26,10 +26,6 @@ namespace TaxCalculator {
       currentIncomeLimits = taxIncomeLimits;
       currentTaxRates = taxRates;
     }
-    private void Init() {
-      currentIncomeLimits = (double[])_defaultIncomeLimits.Clone();
-      currentTaxRates = (double[])_defaultTaxRates.Clone();
-    }
     public void Reset() { Init(); }
     public string GetCurrentIncomeLimit(int interval) {
       try {
@@ -76,6 +72,10 @@ namespace TaxCalculator {
                                                                 "{3, -20:c}{4, -20:c}{5, -20:c}\n",
                                                                 "Gross Income", "Tax", "Net Income", GrossIncome, Tax, NetIncome));
 
+    }
+    private void Init() {
+      currentIncomeLimits = (double[])_defaultIncomeLimits.Clone();
+      currentTaxRates = (double[])_defaultTaxRates.Clone();
     }
     private double CalculateTax() {
       double taxAmount = 0;
