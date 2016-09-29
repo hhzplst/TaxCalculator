@@ -1,3 +1,8 @@
+/*  
+ *  This class is to make sure that the income limits and tax rates 
+ *  are in ascending order when being updated by the user.
+ */
+
 namespace TaxCalculator {
   public class DataValidator {
     public static int UpdateData(double[] arr, int index, double newValue) {
