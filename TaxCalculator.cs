@@ -12,6 +12,10 @@ namespace TaxCalculator {
     public TaxCalculator() {
       Init();
     }
+    public TaxCalculator(double[] taxIncomeLimits, double[] taxRates) {
+      currentIncomeLimits = taxIncomeLimits;
+      currentTaxRates = taxRates;
+    }
     private void Init() {
       currentIncomeLimits = (double[])_defaultIncomeLimits.Clone();
       currentTaxRates = (double[])_defaultTaxRates.Clone();
