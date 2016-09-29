@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace TaxCalculator {
   public class TaxCalculator{
-    private static double[] _defaultIncomeLimits = new double[] {0, 30000, 50000, 100000, 200000, 250000, Double.MaxValue};
+    private static double[] _defaultIncomeLimits = new double[] {0, 30000, 50000, 100000, 200000, 250000, Double.PositiveInfinity};
     private static double[] _defaultTaxRates = new double[] {0, 0.1, 0.2, 0.3, 0.35, 0.4};
     private double[] currentIncomeLimits, currentTaxRates;
     private double grossIncome;
@@ -66,24 +66,25 @@ namespace TaxCalculator {
     }
     public void PrintLines() {
       for (int i = 0; i < 6; i++)
-        Console.WriteLine(String.Format(new CultureInfo("en-US"), "{0, -11} to {1, -20} {2, 5}",
-                               GetCurrentIncomeLimit(i), GetCurrentIncomeLimit(i+1), GetCurrentTaxRate(i+1)));
+        Console.WriteLine(String.Format("{0, -11} to {1, -20} {2, 5}", GetCurrentIncomeLimit(i), 
+                                                        GetCurrentIncomeLimit(i+1), GetCurrentTaxRate(i+1)));
     }
     public void PrintTaxCalculationResult() {
-      Console.WriteLine(String.Format("\n\n**********************************************\n" +
-                                          "{0, -20}{1, -20}{2, -20}\n" +
-                                          "**********************************************\n" +
-                                          "{3, -20}{4, -20}{5, -20}\n", 
-                                          "Gross Income", "Tax", "Net Income", GrossIncome, Tax, NetIncome));
+      Console.WriteLine(String.Format(new CultureInfo("en-US"), "\n\n***************************************************\n" +
+                                                                "{0, -20}{1, -20}{2, -20}\n" +
+                                                                "***************************************************\n" +
+                                                                "{3, -20:c}{4, -20:c}{5, -20:c}\n",
+                                                                "Gross Income", "Tax", "Net Income", GrossIncome, Tax, NetIncome));
+
     }
     private double CalculateTax() {
       double taxAmount = 0;
       for (int i = 0; i < currentTaxRates.Length; i++) {
-        if (GrossIncome > currentIncomeLimits[i] && GrossIncome < currentIncomeLimits[i+1]) {
+        if ((GrossIncome >= currentIncomeLimits[i] && GrossIncome < currentIncomeLimits[i+1])) {
           taxAmount += currentTaxRates[i] * (GrossIncome - currentIncomeLimits[i]);
           break;
         } else {
-          taxAmount += currentTaxRates[i] * currentIncomeLimits[i+1];
+          taxAmount += currentTaxRates[i] * (currentIncomeLimits[i+1] - currentIncomeLimits[i]);
         } 
       }
       return taxAmount;
