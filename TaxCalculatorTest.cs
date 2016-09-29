@@ -4,7 +4,7 @@ namespace TaxCalculator {
     public class TaxCalculatorTest {
         public static void Main(string[] args) {
             TaxCalculator myCalculator = new TaxCalculator();
-            //interval from 1 - 6
+            //intervals are from 1 to 6
             Console.WriteLine("Initial tax table..."); 
             myCalculator.PrintDataTable();
             Console.WriteLine("\n\nSetting the income limit of the 6th interval to $300,000...");
@@ -24,6 +24,9 @@ namespace TaxCalculator {
             Console.WriteLine("\n\nResetting the tax table...");
             myCalculator.Reset();
             myCalculator.PrintDataTable();
+
+            myCalculator.GrossIncome = 85000;
+            myCalculator.PrintTaxCalculationResult();
         }
     }
 }
