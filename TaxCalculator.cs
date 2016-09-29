@@ -7,8 +7,8 @@ namespace TaxCalculator {
     private static double[] _defaultTaxRates = new double[] {0, 0.1, 0.2, 0.3, 0.35, 0.4};
     private double[] currentIncomeLimits, currentTaxRates;
     public double GrossIncome {get; set;}
-    public double Tax {get; set;}
-    public double NetIncome {get;}
+    public double Tax {get { return CalculateTax(); }}
+    public double NetIncome {get { return GrossIncome - Tax; }}
     public TaxCalculator() {
       Init();
     }
@@ -58,6 +58,16 @@ namespace TaxCalculator {
       for (int i = 0; i < 6; i++)
         Console.WriteLine(String.Format(new CultureInfo("en-US"), "{0, -11} to {1, -20} {2, 5}",
                                GetCurrentIncomeLimit(i), GetCurrentIncomeLimit(i+1), GetCurrentTaxRate(i+1)));
-    }        
+    }
+    public void PrintTaxCalculationResult() {
+      Console.WriteLine(String.Format("\n\n**********************************************\n" +
+                                          "{0, -20}{1, -20}{2, -20}\n" +
+                                          "**********************************************\n" +
+                                          "{3, -20}{4, -20}{5, -20}\n", 
+                                          "Gross Income", "Tax", "Net Income", GrossIncome, Tax, NetIncome));
+    }
+    private double CalculateTax() {
+      return 0;
+    } 
   }
 }
